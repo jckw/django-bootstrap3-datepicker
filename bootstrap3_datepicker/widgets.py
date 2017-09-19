@@ -105,12 +105,13 @@ class DatePickerInput(DateInput):
             self.options = options and options.copy() or {}
             self.options['language'] = translation.get_language()
 
-            self.options['format'] = self.conv_date_format_py2js(self.format)
+	    if format and not self.options.get('format') and not self.attrs.get('date-format'):
+		self.options['format'] = self.conv_datetime_format_py2js(format)
 
     def render(self, name, value, attrs=None):
         if value is None:
             value = ''
-        input_attrs = self.build_attrs(attrs, type=self.input_type, name=name)
+        input_attrs = self.build_attrs(attrs, extra_attrs={'type':self.input_type, 'name':name})
         if value != '':
             # Only add the 'value' attribute if a value is non-empty.
             input_attrs['value'] = force_text(self._format_value(value))
